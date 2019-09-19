@@ -8,6 +8,8 @@
 
 using namespace std;
 
+int myceil(int numerator, int denominator);
+
 int main()
 {
 	Multilinear m;
@@ -134,8 +136,11 @@ int main()
 	//Compute ρmin and ρmax. Let ρ = ρmin.
 	int n = g.get_vertice_size();
 	int e = g.get_edge_size();
-	int pmin = ceil(n/nmax);
+
+	//math.ceil() has problem with fraction, build myceil()
+	int pmin = myceil(n, nmax);
 	int pmax = floor(n/nmin);
+	
 	int sp, rp;
 
 	//parameters for metis
@@ -161,19 +166,32 @@ int main()
 	}
 
 	int metis_ret;
+	
+	for (int p = pmin; p <= pmax; ++p){
+		//cout << "n:" << n << endl;
+		//cout << "pmax:" << pmax << endl;
+		//cout << "pmin:" << pmin << endl;
 
-	for (float p = pmin; p <= pmax; ++p){
-		sp = ceil(n/p);//nominal partition size
+		sp = myceil(n, p);//nominal partition size
 		rp = nmax/sp;//load imbalance
 		ncon = rp;
 		nparts = p;
 
 		metis_ret = METIS_PartGraphRecursive(&nvtxs, &ncon, xadj, adjncy, NULL, NULL, NULL, &nparts, NULL,
-		NULL, NULL, &objval, part);
+		NULL, NULL, &objval, part);//compile method of metis on the top
 
 	}
 
 	return 0;
+}
+
+int myceil(int numerator, int denominator){
+	if (numerator == denominator){
+		return floor(numerator/denominator);
+	}
+	else{
+		return floor(numerator/denominator)+1;
+	}
 }
 
 
