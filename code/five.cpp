@@ -3,6 +3,9 @@
 #define NIL -1 
 
 Graph::Graph(Multilinear m) {
+    //initialize private variables
+    numEdges = 0;
+    bi_components_num = 0;
     varnums = m.get_varnums();
     numVertices = varnums.size();
 
@@ -222,6 +225,7 @@ void Graph::compute_biconnected_components(){
         low[i] = NIL; 
         parent[i] = NIL; 
     } 
+    cout << "d3";
   
     for (int i = 0; i < numVertices; i++) { 
         if (disc[i] == NIL) 
@@ -232,15 +236,21 @@ void Graph::compute_biconnected_components(){
         // If stack is not empty, pop all edges from stack 
         while (st->size() > 0) { 
             j = 1; 
+            cout << "d7";
             cout << varnums[st->back().v] << "--" << varnums[st->back().i] << " ";  
+            cout << "d5";
             st->pop_back(); 
+            cout << "d6";
         } 
+        //cout << "d4";
 
         if (j == 1) { 
             cout << endl; 
+            cout << "d8";
             bi_components_num++; 
         } 
     } 
+    cout << "d2";
 }
 
 void Graph::toString() {

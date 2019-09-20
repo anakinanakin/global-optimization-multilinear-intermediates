@@ -118,6 +118,7 @@ int main()
 	//Given a multilinear function L(x) with the weighted biconnected graph G = (V, E)
 	//use g for now
 	
+	cout << "d1";
 	//use parameters in the paper
 	float B1 = 0.1, B2 = 1.25;
 	int nmax = 15;
@@ -177,9 +178,10 @@ int main()
 		ncon = rp;
 		nparts = p;
 
-		metis_ret = METIS_PartGraphRecursive(&nvtxs, &ncon, xadj, adjncy, NULL, NULL, NULL, &nparts, NULL,
-		NULL, NULL, &objval, part);//compile method of metis on the top
-
+		//compile method of metis on the top
+		metis_ret = METIS_PartGraphKway(&nvtxs, &ncon, xadj, adjncy, NULL, NULL, NULL, &nparts, NULL,
+		NULL, NULL, &objval, part);//Memory allocation failed for CoarsenGraph: graph->cmap.
+		//might need the cluster to work on it, or use other partition method
 	}
 
 	return 0;
