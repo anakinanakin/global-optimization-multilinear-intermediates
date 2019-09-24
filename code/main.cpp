@@ -1,5 +1,4 @@
-//g++ main.cpp one.cpp five.cpp multilinear.cpp -lmetis
-#include <metis.h>
+//g++ main.cpp one.cpp five.cpp multilinear.cpp
 #include <math.h>
 
 #include "multilinear.h"
@@ -54,13 +53,13 @@ int main()
 		r.mpush(r.getj(), r.fgetcoef(i), r.fgetval(i), -1);
 	}
 
-	cout << "m:";
+	cout << "\nm:";
 	r.mprint();
-	cout << "y:";
+	cout << "\ny:";
 	r.yprint();
-	cout << "f:";
+	cout << "\nf:";
 	r.fprint();
-	//cout << "\n";
+	cout << "\n";
 
 	Graph g(m);
 	g.toString();
@@ -118,7 +117,6 @@ int main()
 	//Given a multilinear function L(x) with the weighted biconnected graph G = (V, E)
 	//use g for now
 	
-	cout << "d1";
 	//use parameters in the paper
 	float B1 = 0.1, B2 = 1.25;
 	int nmax = 15;
@@ -143,48 +141,10 @@ int main()
 	int pmax = floor(n/nmin);
 	
 	int sp, rp;
-
-	//parameters for metis
-	idx_t nvtxs = n;
-	idx_t ncon;//suppose it's rp
-	//for xadj, adjncy representation explaination:
-	//https://www.researchgate.net/figure/Compressed-Sparse-Row-CSR-representation-Every-graph-can-be-represented-as-an_fig3_324640550
-	idx_t xadj[n+1];
-	idx_t adjncy[e];
-	idx_t nparts;
-	idx_t objval;
-    idx_t part[n];
-
-	int *tempxadj = g.get_csr_vertex();
-	int *tempadjncy = g.get_csr_edge();
-
-	for (int i = 0; i < n+1; ++i){
-		xadj[i] = tempxadj[i];
-	}
-
-	for (int i = 0; i < e; ++i){
-		adjncy[i] = tempadjncy[i];
-	}
-
-	int metis_ret;
 	
 	for (int p = pmin; p <= pmax; ++p){
-		//cout << "n:" << n << endl;
-		//cout << "pmax:" << pmax << endl;
-		//cout << "pmin:" << pmin << endl;
-
 		sp = myceil(n, p);//nominal partition size
 		rp = nmax/sp;//load imbalance
-		ncon = rp;
-		nparts = p;
-
-		//compile method of metis on the top
-		//metis_ret = METIS_PartGraphKway(&nvtxs, &ncon, xadj, adjncy, NULL, NULL, NULL, &nparts, NULL,
-		//NULL, NULL, &objval, part);//Floating point exception at multilinear.cpp:func.push_back(v)
-
-		//metis_ret = METIS_PartGraphRecursive(&nvtxs, &ncon, xadj, adjncy, NULL, NULL, NULL, &nparts, NULL,
-		//NULL, NULL, &objval, part);//Memory allocation failed for CoarsenGraph: graph->cmap.
-		//might need the cluster to work on it, or use other partition method
 	}
 
 	return 0;

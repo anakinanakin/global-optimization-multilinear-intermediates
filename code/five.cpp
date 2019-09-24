@@ -107,7 +107,6 @@ void Graph::BCC(int v, int disc[], int low[], list<struct Edge>* st, int parent[
     // Initialize discovery time and low value 
     disc[v] = low[v] = ++time; 
     int children = 0; 
-    cout << "d12";
   
     // Recur for all the vertices adjacent to this vertex 
     for (int i = 0; i < numVertices; ++i) { 
@@ -130,13 +129,11 @@ void Graph::BCC(int v, int disc[], int low[], list<struct Edge>* st, int parent[
                     while (st->back().v != v || st->back().i != i) { 
                         cout << varnums[st->back().v] << "--" << varnums[st->back().i] << " "; 
                         st->pop_back(); 
-                        cout << "d10";
                     } 
 
                     cout << varnums[st->back().v] << "--" << varnums[st->back().i]; 
-                    cout << "d9";
                     st->pop_back(); 
-                    cout << "d11";
+                    cout << endl; 
                     bi_components_num++; 
                 } 
             } 
@@ -175,15 +172,12 @@ void Graph::compute_connected_components(){
 void Graph::print_connected_components(){
     cout << "connected components:";
     for(int i = 0; i < connected_components.size(); ++i){
-        cout << "vertices of component " << i+1 << ": ";
+        cout << "\nvertices of component " << i+1 << ": ";
         for(int j = 0; j < connected_components[i].size(); ++j){
             cout << varnums[connected_components[i][j]] << " ";
-            cout << "s3";
         }
-        cout << "s2";
     }
-    cout << "s1";
-    //cout << "\n";
+    cout << "\n";
 }
 
 int Graph::get_connected_components_size(){
@@ -218,7 +212,7 @@ bool Graph::three_edge_component(int i){
 
 // The function to do DFS traversal. It uses BCC() 
 void Graph::compute_biconnected_components(){
-    cout << "biconnected components:";
+    cout << "biconnected components:\n";
 
     int* disc = new int[numVertices]; 
     int* low = new int[numVertices]; 
@@ -231,7 +225,6 @@ void Graph::compute_biconnected_components(){
         low[i] = NIL; 
         parent[i] = NIL; 
     } 
-    cout << "d3";
   
     for (int i = 0; i < numVertices; i++) { 
         if (disc[i] == NIL) 
@@ -242,34 +235,30 @@ void Graph::compute_biconnected_components(){
         // If stack is not empty, pop all edges from stack 
         while (st->size() > 0) { 
             j = 1; 
-            cout << "d7";
             cout << varnums[st->back().v] << "--" << varnums[st->back().i] << " ";  
-            cout << "d5";
             st->pop_back(); 
-            cout << "d6";
         } 
-        cout << "d4";
+        //cout << "d4";
 
         if (j == 1) { 
-            cout << "d8";
+            cout << endl; 
             bi_components_num++; 
         } 
     } 
-    cout << "d2";
 }
 
 void Graph::toString() {
-    cout << "Graph matrix:   ";
+    cout << "Graph matrix:\n   ";
     for (int i = 0; i < numVertices; ++i){
         cout << varnums[i] <<" ";
     }
-    //cout << "\n";
+    cout << "\n";
     for (int i = 0; i < numVertices; ++i){
         cout << varnums[i] << "  ";
         for (int j = 0; j < numVertices; ++j){
             cout << adjMatrix[i][j] << " ";
         }
-        //cout << "\n";
+        cout << "\n";
     }
 }
 
