@@ -54,13 +54,13 @@ int main()
 		r.mpush(r.getj(), r.fgetcoef(i), r.fgetval(i), -1);
 	}
 
-	cout << "\nm:";
+	cout << "m:";
 	r.mprint();
-	cout << "\ny:";
+	cout << "y:";
 	r.yprint();
-	cout << "\nf:";
+	cout << "f:";
 	r.fprint();
-	cout << "\n";
+	//cout << "\n";
 
 	Graph g(m);
 	g.toString();
@@ -179,8 +179,11 @@ int main()
 		nparts = p;
 
 		//compile method of metis on the top
-		metis_ret = METIS_PartGraphKway(&nvtxs, &ncon, xadj, adjncy, NULL, NULL, NULL, &nparts, NULL,
-		NULL, NULL, &objval, part);//Memory allocation failed for CoarsenGraph: graph->cmap.
+		//metis_ret = METIS_PartGraphKway(&nvtxs, &ncon, xadj, adjncy, NULL, NULL, NULL, &nparts, NULL,
+		//NULL, NULL, &objval, part);//Floating point exception at multilinear.cpp:func.push_back(v)
+
+		//metis_ret = METIS_PartGraphRecursive(&nvtxs, &ncon, xadj, adjncy, NULL, NULL, NULL, &nparts, NULL,
+		//NULL, NULL, &objval, part);//Memory allocation failed for CoarsenGraph: graph->cmap.
 		//might need the cluster to work on it, or use other partition method
 	}
 

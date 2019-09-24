@@ -24,7 +24,7 @@ Multilinear::Multilinear(){
 			v.push_back(tempVar);
 		}
 
-		func.push_back(v);
+		func.push_back(v);//Floating point exception while using METIS_PartGraphKway
 		v.clear();
 	}
 }
@@ -45,7 +45,7 @@ int Multilinear::getvar(int term, int var){
 }
 
 void Multilinear::toString(){
-	cout << "multilinear function:\n";
+	cout << "multilinear function:";
 
 	for(int i = 0; i < this->func.size(); ++i){
 		for(int j = 0; j < this->func[i].size(); ++j){
