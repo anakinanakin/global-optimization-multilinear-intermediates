@@ -1,9 +1,14 @@
-//g++ main.cpp one.cpp five.cpp multilinear.cpp
+//g++ main.cpp one.cpp five.cpp multilinear.cpp -lmetis -lparmetis -lmpi
 #include <math.h>
+#include <metis.h>
+#include <parmetis.h>
+#include <mpi.h>
+#include <thread>
 
 #include "multilinear.h"
 #include "one.h"
 #include "five.h"
+
 
 using namespace std;
 
@@ -141,10 +146,82 @@ int main()
 	int pmax = floor(n/nmin);
 	
 	int sp, rp;
+
+	//number of threads
+	unsigned threads = thread::hardware_concurrency();
+
+	//parameters for parmetis
+	//idx_t nvtxs = n;
+	idx_t ncon;//suppose it's rp
+	//for xadj, adjncy representation explaination:
+	//https://www.researchgate.net/figure/Compressed-Sparse-Row-CSR-representation-Every-graph-can-be-represented-as-an_fig3_324640550
+	idx_t xadj[n+1];
+	idx_t adjncy[e];
+	idx_t vtxdist[threads+1];
+	idx_t nparts;
+	idx_t objval;
+    idx_t part[n];
+
+    MPI_Comm comm = MPI_COMM_WORLD;
+
+	int *tempxadj = g.get_csr_vertex();
+	int *tempadjncy = g.get_csr_edge();
+	int *tempvtxdist = g.get_csr_processor(threads);
+
+	cout << "xadj:";
+	for (int i = 0; i < n+1; ++i){
+		xadj[i] = tempxadj[i];
+		cout << xadj[i] << " ";
+	}
+
+	cout << "\nadjncy:";
+	for (int i = 0; i < e; ++i){
+		adjncy[i] = tempadjncy[i];
+		cout << adjncy[i] << " ";
+	}
+
+	cout << "\nvtxdist:";
+	for (int i = 0; i < threads+1; ++i){
+		vtxdist[i] = tempvtxdist[i];
+		cout << vtxdist[i] << " ";
+	}
+	cout << endl;
+
+	int par_metis;
 	
 	for (int p = pmin; p <= pmax; ++p){
+		//cout << "n:" << n << endl;
+		//cout << "pmax:" << pmax << endl;
+		//cout << "pmin:" << pmin << endl;
+
 		sp = myceil(n, p);//nominal partition size
 		rp = nmax/sp;//load imbalance
+		ncon = rp;
+		nparts = p;
+
+		//real_t *tpwgts = new real_t[ncon][nparts];
+		//real_t *ubvec = new real_t[ncon];
+
+		/*for (int i = 0; i < ncon; ++i){
+			ubvec[i] = 1.05;
+
+			for (int j = 0; i < nparts; ++j){
+				tpwgts[i][j] = 1/nparts;
+			}
+		}*/
+
+		par_metis = ParMETIS_V3_PartKway(vtxdist, xadj, adjncy, NULL, NULL, 0, 0, &ncon, &nparts, NULL, NULL, NULL, NULL, NULL, &comm);
+
+		/*for (int i = 0; i < ncon; ++i){
+			delete[] ubvec[i];
+
+			for (int j = 0; i < nparts; ++j){
+				delete[] tpwgts[i][j];
+			}
+		}
+
+		delete[] tpwgts;
+		delete[] ubvec;*/
 	}
 
 	return 0;
