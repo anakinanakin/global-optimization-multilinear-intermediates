@@ -65,24 +65,24 @@ string Unifunction::toString(){
 
 string Univariate::toString(){
 	if (this->coef == 1){
-		return "\ny" + to_string(this->j) + " = x" + to_string(this->x);
+		return "y" + to_string(this->j) + " = x" + to_string(this->x);
 	}
 	else{
-		return "\ny" + to_string(this->j) + " = " + to_string(this->coef) + "x" + to_string(this->x);
+		return "y" + to_string(this->j) + " = " + to_string(this->coef) + "x" + to_string(this->x);
 	}
 }
 
 string Bilinear::toString(){
 	if (this->second == -1){
 		if (this->coef == 1){
-			return "\ny" + to_string(this->j) + " = x" + to_string(this->first);
+			return "y" + to_string(this->j) + " = x" + to_string(this->first);
 		}
 		else{
-			return "\ny" + to_string(this->j) + " = " + to_string(this->coef) + "x" + to_string(this->first);
+			return "y" + to_string(this->j) + " = " + to_string(this->coef) + "x" + to_string(this->first);
 		}
 	}
 	else{
-		return "\ny" + to_string(this->j) + " = y" + to_string(this->first) + "y" + to_string(this->second);
+		return "y" + to_string(this->j) + " = y" + to_string(this->first) + "y" + to_string(this->second);
 	}
 }
 

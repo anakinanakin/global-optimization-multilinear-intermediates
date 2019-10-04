@@ -25,7 +25,7 @@ class Graph
 		void toString();
 		int* get_csr_vertex();
 		int* get_csr_edge();
-		int* get_csr_processor(unsigned procnum);
+		int* get_csr_processor(int procnum);
 		//void set_varnums(std::vector<int> v);
 
 		~Graph();

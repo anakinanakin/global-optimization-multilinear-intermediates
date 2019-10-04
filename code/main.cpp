@@ -1,7 +1,6 @@
-//g++ main.cpp one.cpp five.cpp multilinear.cpp -lmetis -lparmetis -lmpi
+//mpic++ main.cpp one.cpp five.cpp multilinear.cpp -lmetis
 #include <math.h>
 #include <metis.h>
-#include <parmetis.h>
 #include <mpi.h>
 #include <thread>
 
@@ -14,7 +13,7 @@ using namespace std;
 
 int myceil(int numerator, int denominator);
 
-int main()
+int main(int argc, char *argv[])
 {
 	Multilinear m;
 	m.toString();
@@ -58,13 +57,13 @@ int main()
 		r.mpush(r.getj(), r.fgetcoef(i), r.fgetval(i), -1);
 	}
 
-	cout << "\nm:";
+	cout << "m:";
 	r.mprint();
-	cout << "\ny:";
+	cout << "y:";
 	r.yprint();
-	cout << "\nf:";
+	cout << "f:";
 	r.fprint();
-	cout << "\n";
+	cout << "";
 
 	Graph g(m);
 	g.toString();
@@ -148,7 +147,15 @@ int main()
 	int sp, rp;
 
 	//number of threads
-	unsigned threads = thread::hardware_concurrency();
+	//unsigned threads = thread::hardware_concurrency();
+
+	/*MPI_Comm comm;
+	int mpisize, myrank;
+
+    MPI_Init(&argc, &argv);
+  	MPI_Comm_dup(MPI_COMM_WORLD, &comm);
+  	MPI_Comm_size(comm, &mpisize);
+  	MPI_Comm_rank(comm, &myrank);*/
 
 	//parameters for parmetis
 	//idx_t nvtxs = n;
@@ -157,16 +164,20 @@ int main()
 	//https://www.researchgate.net/figure/Compressed-Sparse-Row-CSR-representation-Every-graph-can-be-represented-as-an_fig3_324640550
 	idx_t xadj[n+1];
 	idx_t adjncy[e];
-	idx_t vtxdist[threads+1];
+	//idx_t vtxdist[mpisize+1];
 	idx_t nparts;
 	idx_t objval;
     idx_t part[n];
-
-    MPI_Comm comm = MPI_COMM_WORLD;
+    //idx_t npes = mpisize, mype = myrank;
+    idx_t numflag = 0, wgtflag = 0;
+    idx_t options[1] = {0};
+    idx_t edgecut = 0;
+    idx_t ndims = 1;
+    real_t xyz[n];
 
 	int *tempxadj = g.get_csr_vertex();
 	int *tempadjncy = g.get_csr_edge();
-	int *tempvtxdist = g.get_csr_processor(threads);
+	//int *tempvtxdist = g.get_csr_processor(mpisize);
 
 	cout << "xadj:";
 	for (int i = 0; i < n+1; ++i){
@@ -174,55 +185,80 @@ int main()
 		cout << xadj[i] << " ";
 	}
 
-	cout << "\nadjncy:";
+	cout << "adjncy:";
 	for (int i = 0; i < e; ++i){
 		adjncy[i] = tempadjncy[i];
 		cout << adjncy[i] << " ";
 	}
 
-	cout << "\nvtxdist:";
-	for (int i = 0; i < threads+1; ++i){
+	/*
+	cout << "vtxdist:";
+	for (int i = 0; i < mpisize+1; ++i){
 		vtxdist[i] = tempvtxdist[i];
 		cout << vtxdist[i] << " ";
 	}
-	cout << endl;
+	//cout << endl;
 
-	int par_metis;
+	for (int i = 0; i < n; ++i){
+		xyz[i] = 0.0;
+	}*/
+
+	int _metis;
+	//real_t tpwgts = 0.0, ubvec = 0.0;
 	
-	for (int p = pmin; p <= pmax; ++p){
-		//cout << "n:" << n << endl;
-		//cout << "pmax:" << pmax << endl;
-		//cout << "pmin:" << pmin << endl;
+	/*//for (int p = pmin; p <= pmax; ++p){
+	cout << "d2";
+	//cout << "n:" << n << endl;
+	//cout << "pmax:" << pmax << endl;
+	//cout << "pmin:" << pmin << endl;
 
-		sp = myceil(n, p);//nominal partition size
-		rp = nmax/sp;//load imbalance
-		ncon = rp;
-		nparts = p;
+	cout << "p:" << p;
 
-		//real_t *tpwgts = new real_t[ncon][nparts];
-		//real_t *ubvec = new real_t[ncon];
+	sp = myceil(n, p);//nominal partition size
+	cout << "sp:" << sp;
+	cout << "nmax:" << nmax;
+	rp = nmax/sp;//load imbalance
+	//ncon = rp;//ncon can't be 0
+	//nparts = p;*/
+	ncon = 3;
+	nparts = 3;
 
-		/*for (int i = 0; i < ncon; ++i){
-			ubvec[i] = 1.05;
+	/*real_t tpwgts[ncon*nparts];
+	real_t ubvec[ncon];
 
-			for (int j = 0; i < nparts; ++j){
-				tpwgts[i][j] = 1/nparts;
-			}
-		}*/
+	//tpwgts = rmalloc(nparts*ncon, "tpwgts");
+	//ubvec = new real_t[ncon];//ncon can't be 0
 
-		par_metis = ParMETIS_V3_PartKway(vtxdist, xadj, adjncy, NULL, NULL, 0, 0, &ncon, &nparts, NULL, NULL, NULL, NULL, NULL, &comm);
-
-		/*for (int i = 0; i < ncon; ++i){
-			delete[] ubvec[i];
-
-			for (int j = 0; i < nparts; ++j){
-				delete[] tpwgts[i][j];
-			}
-		}
-
-		delete[] tpwgts;
-		delete[] ubvec;*/
+	for (int i = 0; i < ncon*nparts; ++i)
+	{
+		tpwgts[i] = 1/nparts;
 	}
+
+	for (int i = 0; i < ncon; ++i)
+	{
+		ubvec[i] = 1.05;
+	}
+
+	cout << "mpisize: " << mpisize;//mpisize = 1, need more
+
+	//par_metis = ParMETIS_V3_PartKway(vtxdist, xadj, adjncy, NULL, NULL, &wgtflag, &numflag, &ncon, &nparts, tpwgts, ubvec, options, &edgecut, part, &comm);
+	*/
+	idx_t nvtxs = n;
+
+	//both methods work
+	_metis = METIS_PartGraphRecursive(&nvtxs, &ncon, xadj, adjncy, NULL, NULL, NULL, &nparts, NULL, NULL, NULL, &objval, part);
+	//_metis = METIS_PartGraphKway(&nvtxs, &ncon, xadj, adjncy, NULL, NULL, NULL, &nparts, NULL, NULL, NULL, &objval, part);
+
+	//cout << "edgecut:" << edgecut;
+
+	cout << "objval:" << objval;
+	cout << " _metis:" << _metis;
+	cout << endl;
+	//delete[] ubvec;
+	//}
+
+	//MPI_Comm_free(&comm);
+	//MPI_Finalize();
 
 	return 0;
 }
