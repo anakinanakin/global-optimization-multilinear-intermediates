@@ -1,7 +1,11 @@
 #include "multilinear.h"
 
+//default constructor
+Multilinear::Multilinear() {}
+
 //the whole function is a vector, each element is a vector representing each term with integers(coef, var1, var2....)
-Multilinear::Multilinear(){
+//a is only for indicating this constructor
+Multilinear::Multilinear(int a){
 	int terms, coef, vars, tempVar;
 	vector<int> v;
 
@@ -26,6 +30,33 @@ Multilinear::Multilinear(){
 
 		func.push_back(v);
 		v.clear();
+	}
+}
+
+//construct a multilinear by collecting all terms of multilinear m with each of vertex in arr, used for connected components
+Multilinear::Multilinear(Multilinear m, vector<int> v){
+	//for breaking the loop
+	int a = 0;
+
+	for (int i = 0; i < m.func.size(); ++i){
+		//ignore coef
+		for (int j = 1; j < m.func[i].size(); ++j){
+			for (int k = 0; k < v.size(); ++k){
+				//if found same vertex, push it to the new multilinear
+				if (m.func[i][j] == v[k]){
+					func.push_back(m.func[i]);
+					
+					a = 1;
+					break;
+				}
+			}
+
+			if (a == 1){
+				break;
+			}
+		}
+
+		a = 0;
 	}
 }
 

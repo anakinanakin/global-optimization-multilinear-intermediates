@@ -180,6 +180,30 @@ void Graph::print_connected_components(){
     //cout << "\n";
 }
 
+/*//get the first vertex of each component for forming the corresponding multilinear
+int* Graph::get_connected_components_num(){
+    int size = connected_components.size();
+    int *arr = new int[size];
+
+    for(int i = 0; i < size; ++i){
+        arr[i] = varnums[connected_components[i][0]];
+    }
+
+    return arr;
+}*/
+
+vector<int> Graph::get_connected_components_vertices(int i){
+    int size = connected_components[i].size();
+    vector<int> v;
+
+    for (int j = 0; j < size; ++j)
+    {
+        v.push_back(varnums[connected_components[i][j]]);
+    }
+
+    return v;
+}
+
 int Graph::get_connected_components_size(){
     return connected_components.size();
 }

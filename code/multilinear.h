@@ -10,6 +10,8 @@ class Multilinear
 {
 	public:
 		Multilinear();
+		Multilinear(int a);
+		Multilinear(Multilinear m, vector<int> v);
 
 		int getsize();
 		int get_term_size(int term);

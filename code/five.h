@@ -16,6 +16,8 @@ class Graph
 
 		void compute_connected_components();
 		void print_connected_components();
+		//int* get_connected_components_num();
+		vector<int> get_connected_components_vertices(int i);
 		int get_connected_components_size();
 		int get_component_size(int i);
 		int get_vertice_size();

@@ -1,7 +1,6 @@
-//mpic++ main.cpp one.cpp five.cpp multilinear.cpp -lmetis
+//g++ main.cpp one.cpp five.cpp multilinear.cpp -lmetis
 #include <math.h>
 #include <metis.h>
-#include <mpi.h>
 #include <thread>
 
 #include "multilinear.h"
@@ -15,7 +14,7 @@ int myceil(int numerator, int denominator);
 
 int main(int argc, char *argv[])
 {
-	Multilinear m;
+	Multilinear m(1);
 	m.toString();
 
 	Relation r;
@@ -69,7 +68,6 @@ int main(int argc, char *argv[])
 	g.toString();
 
 	//algorithm 5 
-	//todo:Lt and Ltk, wait to decide data structure
 
 	//if the number of variables in L(x) does not exceed nmin, 
 	//we do not attempt to break it down to smaller multilinears but store it for cut generation.
@@ -84,12 +82,43 @@ int main(int argc, char *argv[])
 	g.print_connected_components();
 
 	int csize = g.get_connected_components_size();
+
+	/*int *first_vertices = g.get_connected_components_num();
+
+	cout << " first_vertices: ";
+	for (int i = 0; i < csize; ++i)
+	{
+		cout << first_vertices[i] << " ";
+	}*/
+
+	vector<Multilinear> L;
+	//Multilinear lt;
+	vector<int> v;
+	Multilinear lt;
+
 	//for all gt
 	for (int i = 0; i < csize; ++i){ 
 		//if nt=3 && gt has 3 edges
 		if (g.get_component_size(i) == 3 && g.three_edge_component(i)){
 			//store Lt for cut generation
+			//get the corresponding multilinear of the component
+			v = g.get_connected_components_vertices(i);
+
+			cout << "v: ";
+			for (int j = 0; j < v.size(); ++j){
+				cout << v[j] << " ";
+			}
+			
+			lt = Multilinear(m, v);
+			L.push_back(lt);
 		}
+	}
+
+	cout << "L.size = " << L.size() << endl;
+	cout << "L:\n";
+	for (int i = 0; i < L.size(); ++i){
+		L[i].toString();
+		cout << endl;
 	}
 
 	g.compute_biconnected_components();
