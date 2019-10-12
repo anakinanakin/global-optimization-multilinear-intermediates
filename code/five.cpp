@@ -1,6 +1,7 @@
 #include "five.h"
 
-#define NIL -1 
+//default constructor
+Graph::Graph() {}
 
 Graph::Graph(Multilinear m) {
     //initialize private variables
@@ -64,7 +65,7 @@ int Graph::find_vector_index(int element){
         return distance(varnums.begin(), it);
     }
     else{
-        cout << "Element not found";
+        //cout << "Element not found";
         return 0;
     }
 }
@@ -107,6 +108,8 @@ void Graph::BCC(int v, int disc[], int low[], list<struct Edge>* st, int parent[
     // Initialize discovery time and low value 
     disc[v] = low[v] = ++time; 
     int children = 0; 
+
+    vector<struct Edge> bi_conn;
   
     // Recur for all the vertices adjacent to this vertex 
     for (int i = 0; i < numVertices; ++i) { 
@@ -126,15 +129,21 @@ void Graph::BCC(int v, int disc[], int low[], list<struct Edge>* st, int parent[
   
                 // If v is an articulation point, pop all edges from stack till v -- i 
                 if ((disc[v] == 1 && children > 1) || (disc[v] > 1 && low[i] >= disc[v])) { 
+                    cout << "\nbiconnected components " << bi_components_num+1 << ":";
+
                     while (st->back().v != v || st->back().i != i) { 
+                        bi_conn.push_back(Edge(varnums[st->back().v], varnums[st->back().i]));
                         cout << varnums[st->back().v] << "--" << varnums[st->back().i] << " "; 
                         st->pop_back(); 
                     } 
 
+                    bi_conn.push_back(Edge(varnums[st->back().v], varnums[st->back().i]));
                     cout << varnums[st->back().v] << "--" << varnums[st->back().i]; 
                     st->pop_back(); 
-                    //cout << endl; 
+
+                    bi_connected_components.push_back(bi_conn);
                     bi_components_num++; 
+                    bi_conn.clear();
                 } 
             } 
 
@@ -196,8 +205,7 @@ vector<int> Graph::get_connected_components_vertices(int i){
     int size = connected_components[i].size();
     vector<int> v;
 
-    for (int j = 0; j < size; ++j)
-    {
+    for (int j = 0; j < size; ++j) {
         v.push_back(varnums[connected_components[i][j]]);
     }
 
@@ -209,6 +217,7 @@ int Graph::get_connected_components_size(){
 }
 
 int Graph::get_component_size(int i){
+    cout << "nt = " << connected_components[i].size() << "   ";
     return connected_components[i].size();
 }
 
@@ -222,9 +231,9 @@ int Graph::get_edge_size(){
 
 // see if a 3-vertices connected component has exactly 3 edges
 bool Graph::three_edge_component(int i){
-    int a = find_vector_index(connected_components[i][0]);
-    int b = find_vector_index(connected_components[i][1]);
-    int c = find_vector_index(connected_components[i][2]);
+    int a = connected_components[i][0];
+    int b = connected_components[i][1];
+    int c = connected_components[i][2];
 
     if (adjMatrix[a][b] > 0 && adjMatrix[a][c] > 0 && adjMatrix[b][c] > 0){
         return true;
@@ -236,53 +245,104 @@ bool Graph::three_edge_component(int i){
 
 // The function to do DFS traversal. It uses BCC() 
 void Graph::compute_biconnected_components(){
-    cout << "biconnected components:";
-
     int* disc = new int[numVertices]; 
     int* low = new int[numVertices]; 
     int* parent = new int[numVertices];
     list<struct Edge>* st = new list<struct Edge>[numVertices*(numVertices-1)]; 
+    vector<struct Edge> bi_conn;
   
     // Initialize disc and low, and parent arrays 
     for (int i = 0; i < numVertices; i++) { 
-        disc[i] = NIL; 
-        low[i] = NIL; 
-        parent[i] = NIL; 
+        disc[i] = -1; 
+        low[i] = -1; 
+        parent[i] = -1; 
     } 
   
     for (int i = 0; i < numVertices; i++) { 
-        if (disc[i] == NIL) 
+        if (disc[i] == -1) { 
             BCC(i, disc, low, st, parent); 
-  
-        int j = 0; 
+        }
+
+        if (st->size() > 0) {
+            cout << "\nbiconnected components " << bi_components_num+1 << ":";
+            bi_components_num++; 
+        }
 
         // If stack is not empty, pop all edges from stack 
         while (st->size() > 0) { 
-            j = 1; 
+            bi_conn.push_back(Edge(varnums[st->back().v], varnums[st->back().i]));
             cout << varnums[st->back().v] << "--" << varnums[st->back().i] << " ";  
             st->pop_back(); 
-        } 
-        //cout << "d4";
 
-        if (j == 1) { 
-            //cout << endl; 
-            bi_components_num++; 
+            if (st->size() == 0) {
+                bi_connected_components.push_back(bi_conn);
+                bi_conn.clear();
+            }
         } 
     } 
 }
 
-void Graph::toString() {
-    cout << "Graph matrix:   ";
-    for (int i = 0; i < numVertices; ++i){
-        cout << varnums[i] <<" ";
+vector<struct Edge> Graph::get_biconnected_components_edges(int i) {
+    int size = bi_connected_components[i].size();
+    vector<struct Edge> v;
+
+    for (int j = 0; j < size; ++j) {
+        v.push_back(bi_connected_components[i][j]);
     }
-    //cout << "\n";
+
+    return v;
+}
+
+int Graph::get_biconnected_components_size() {
+    return bi_components_num;
+}
+
+//get vertices num of a biconnected component
+int Graph::get_bicomponent_size(int a) {
+    int size = bi_connected_components[a].size();
+    vector<int> v;
+
+    for (int i = 0; i < size; ++i) {
+        v.push_back(bi_connected_components[a][i].v);
+        v.push_back(bi_connected_components[a][i].i);
+    }
+
+    int ntk = countDistinct(v);
+    cout << "ntk = " << ntk << "   ";
+    return ntk;
+}
+
+//count distinct integers in an array
+int Graph::countDistinct(vector<int> v) { 
+    // Creates an empty hashset 
+    unordered_set<int> s; 
+  
+    // Traverse the input array 
+    int res = 0; 
+    for (int i = 0; i < v.size(); i++) { 
+        // If not present, then put it in 
+        // hashtable and increment result 
+        if (s.find(v[i]) == s.end()) { 
+            s.insert(v[i]); 
+            res++; 
+        } 
+    } 
+  
+    return res; 
+} 
+
+void Graph::toString() {
+    cout << "Graph matrix:\n   ";
+    for (int i = 0; i < numVertices; ++i){
+        cout << varnums[i] << " ";
+    }
+    cout << "\n";
     for (int i = 0; i < numVertices; ++i){
         cout << varnums[i] << "  ";
         for (int j = 0; j < numVertices; ++j){
             cout << adjMatrix[i][j] << " ";
         }
-        //cout << "\n";
+        cout << "\n";
     }
 }
 

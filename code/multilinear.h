@@ -4,6 +4,8 @@
 #include <vector>
 #include <algorithm>
 
+#include "edge.h"
+
 using namespace std;
 
 class Multilinear
@@ -12,6 +14,7 @@ class Multilinear
 		Multilinear();
 		Multilinear(int a);
 		Multilinear(Multilinear m, vector<int> v);
+		Multilinear(Multilinear m, vector<struct Edge> v);
 
 		int getsize();
 		int get_term_size(int term);

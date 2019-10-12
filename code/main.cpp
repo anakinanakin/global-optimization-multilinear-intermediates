@@ -91,47 +91,89 @@ int main(int argc, char *argv[])
 		cout << first_vertices[i] << " ";
 	}*/
 
+	//L for cut generation
 	vector<Multilinear> L;
-	//Multilinear lt;
 	vector<int> v;
 	Multilinear lt;
+	vector<Multilinear> ccomponents;
 
-	//for all gt
+	//for all connected components gt
 	for (int i = 0; i < csize; ++i){ 
+		v = g.get_connected_components_vertices(i);
+		//get the corresponding multilinear of the component
+		lt = Multilinear(m, v);
+		//store all connected components for finding biconnected components
+		ccomponents.push_back(lt);
+
 		//if nt=3 && gt has 3 edges
 		if (g.get_component_size(i) == 3 && g.three_edge_component(i)){
-			//store Lt for cut generation
-			//get the corresponding multilinear of the component
-			v = g.get_connected_components_vertices(i);
 
 			cout << "v: ";
 			for (int j = 0; j < v.size(); ++j){
 				cout << v[j] << " ";
 			}
 			
-			lt = Multilinear(m, v);
+			//store lt for cut generation
 			L.push_back(lt);
 		}
 	}
 
 	cout << "L.size = " << L.size() << endl;
-	cout << "L:\n";
+	cout << "L:";
 	for (int i = 0; i < L.size(); ++i){
 		L[i].toString();
 		cout << endl;
 	}
 
-	g.compute_biconnected_components();
+	vector<struct Edge> vec_edge;
+	int bcsize;
+	int ntk;
+	Multilinear ltk;
+	//uncovered multilinears U for further decomposition
+	vector<Multilinear> U;
 
-	//for all gtk:
-	//if (ntk >= 3){
-		//if (ntk <= nmin){
-			//store Ltk for cut generation
-		//}
-		//else{
-		//	add Ltk to the list of uncovered multilinears
-		//}
-	//}
+	//for each connected components gt
+	for (int i = 0; i < csize; ++i){
+		ccomponents[i].toString();
+
+		//if univariable term, skip it or there'll be error for compute_biconnected_components()
+		if (ccomponents[i].getsize() == 1 && ccomponents[i].get_term_size(0) == 2) {
+			continue;
+		}
+
+		//need to use this initialization method to prevent error
+		Graph gt(ccomponents[i]);
+		
+		gt.compute_biconnected_components();
+
+		bcsize = gt.get_biconnected_components_size();
+
+		//for each biconnected components gtk of gt
+		for (int j = 0; j < bcsize; ++j) {
+			//get vertice num of a biconnected component
+			ntk = gt.get_bicomponent_size(j);
+
+			if (ntk >= 3) {
+				vec_edge = gt.get_biconnected_components_edges(j);
+				//cout << "\nvec_edge: ";
+				//for (int k = 0; k < vec_edge.size(); ++k) {
+					//cout << vec_edge[k].v << "  " << vec_edge[k].i << endl;
+				//}
+
+				ltk = Multilinear(m, vec_edge);
+				ltk.toString();
+
+				if (ntk <= nmin) {
+					//store Ltk for cut generation
+					L.push_back(ltk);
+				}
+				else {
+					//add Ltk to the list of uncovered multilinears U
+					U.push_back(ltk);		
+				}
+			}
+		}
+	}
 
 	//algorithm 6
 

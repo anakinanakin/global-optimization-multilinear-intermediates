@@ -38,20 +38,74 @@ Multilinear::Multilinear(Multilinear m, vector<int> v){
 	//for breaking the loop
 	int a = 0;
 
-	for (int i = 0; i < m.func.size(); ++i){
+	for (int i = 0; i < m.func.size(); ++i) {
 		//ignore coef
-		for (int j = 1; j < m.func[i].size(); ++j){
-			for (int k = 0; k < v.size(); ++k){
+		for (int j = 1; j < m.func[i].size(); ++j) {
+			for (int k = 0; k < v.size(); ++k) {
 				//if found same vertex, push it to the new multilinear
 				if (m.func[i][j] == v[k]){
 					func.push_back(m.func[i]);
-					
+
 					a = 1;
 					break;
 				}
 			}
 
-			if (a == 1){
+			if (a == 1) {
+				break;
+			}
+		}
+
+		a = 0;
+	}
+}
+
+//for biconnected components
+Multilinear::Multilinear(Multilinear m, vector<struct Edge> v) {
+	int ctr = 0;
+	//for breaking the loop
+	int a = 0;
+	//for continue to next iteration
+	int b = 0;
+	vector<int> same_num;
+
+	for (int i = 0; i < m.func.size(); ++i) {
+		same_num.clear();
+		
+		for (int k = 0; k < v.size(); ++k) {
+			ctr = 0;
+			//ignore coef
+			for (int j = 1; j < m.func[i].size(); ++j) {
+				//if same variable is found, continue to next iteration
+				for (int l = 0; l < same_num.size(); ++l) {
+					if (same_num[l] == m.func[i][j]) {
+						b = 1;
+						break;
+					}
+				}
+
+				if (b == 1) {
+					b = 0;
+					continue;
+				}
+
+				//need to find two vertices of one edge both matches variables of one term
+				if (m.func[i][j] == v[k].v || m.func[i][j] == v[k].i) {
+					ctr++;
+
+					//record the variables found
+					same_num.push_back(m.func[i][j]);
+
+					if (ctr == 2) {
+						func.push_back(m.func[i]);
+						ctr = 0;
+						a = 1;
+						break;
+					}
+				}
+			}
+
+			if (a == 1) {
 				break;
 			}
 		}
@@ -76,7 +130,7 @@ int Multilinear::getvar(int term, int var){
 }
 
 void Multilinear::toString(){
-	cout << "multilinear function:";
+	cout << "\nmultilinear function:";
 
 	for(int i = 0; i < this->func.size(); ++i){
 		for(int j = 0; j < this->func[i].size(); ++j){
