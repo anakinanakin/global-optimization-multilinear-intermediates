@@ -21,6 +21,7 @@ class Multilinear
 		int getvar(int term, int var);
 		void toString();
 		vector<int> get_varnums();
+		bool repeated_var();
 
 	private:
 		vector< vector<int> > func;

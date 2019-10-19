@@ -66,18 +66,18 @@ Multilinear::Multilinear(Multilinear m, vector<struct Edge> v) {
 	//for breaking the loop
 	int a = 0;
 	//for continue to next iteration
-	int b = 0;
-	vector<int> same_num;
+	//int b = 0;
+	//vector<int> same_num;
 
 	for (int i = 0; i < m.func.size(); ++i) {
-		same_num.clear();
-		
+		//same_num.clear();
+
 		for (int k = 0; k < v.size(); ++k) {
 			ctr = 0;
 			//ignore coef
 			for (int j = 1; j < m.func[i].size(); ++j) {
 				//if same variable is found, continue to next iteration
-				for (int l = 0; l < same_num.size(); ++l) {
+				/*for (int l = 0; l < same_num.size(); ++l) {
 					if (same_num[l] == m.func[i][j]) {
 						b = 1;
 						break;
@@ -87,14 +87,14 @@ Multilinear::Multilinear(Multilinear m, vector<struct Edge> v) {
 				if (b == 1) {
 					b = 0;
 					continue;
-				}
+				}*/
 
 				//need to find two vertices of one edge both matches variables of one term
 				if (m.func[i][j] == v[k].v || m.func[i][j] == v[k].i) {
 					ctr++;
 
 					//record the variables found
-					same_num.push_back(m.func[i][j]);
+					//same_num.push_back(m.func[i][j]);
 
 					if (ctr == 2) {
 						func.push_back(m.func[i]);
@@ -132,43 +132,52 @@ int Multilinear::getvar(int term, int var){
 void Multilinear::toString(){
 	cout << "\nmultilinear function:";
 
-	for(int i = 0; i < this->func.size(); ++i){
-		for(int j = 0; j < this->func[i].size(); ++j){
+	for(int i = 0; i < func.size(); ++i){
+		for(int j = 0; j < func[i].size(); ++j){
 			//don't print coef 1
-			if (j != 0 || this->func[i][j] != 1){
-				cout << this->func[i][j];
+			if (j != 0 || func[i][j] != 1){
+				cout << func[i][j];
 			}
 				
-  			if (j != this->func[i].size()-1){
+  			if (j != func[i].size()-1){
   				cout << "x";
   			}
   		}
 
-  		if (i != this->func.size()-1){
+  		if (i != func.size()-1){
   			cout << "+";
   		}
 	}
 }
 
 //return the distinct variables used, in increasing order
-vector <int> Multilinear::get_varnums(){
-	for(int i = 0; i < this->func.size(); ++i){
-		for(int j = 1; j < this->func[i].size(); ++j){
-			if (find(this->varnums.begin(), this->varnums.end(), func[i][j]) == this->varnums.end()){
-				this->varnums.push_back(func[i][j]);
+vector <int> Multilinear::get_varnums() {
+	for(int i = 0; i < func.size(); ++i) {
+		for(int j = 1; j < func[i].size(); ++j) {
+			if (find(varnums.begin(), varnums.end(), func[i][j]) == varnums.end()){
+				varnums.push_back(func[i][j]);
 			}
 		}
 	}
-	sort(this->varnums.begin(), this->varnums.end());
 
-	//for (int i = 0; i < this->varnums.size(); ++i){
-	//	cout << this->varnums[i];
-	//}
-
-	return this->varnums;
+	sort(varnums.begin(), varnums.end());
+	return varnums;
 }
 
+bool Multilinear::repeated_var() {
+	for(int i = 0; i < func.size(); ++i) {
+		for(int j = 1; j < func[i].size(); ++j) {
+			for(int k = j+1; k < func[i].size(); ++k) {
+				//found repeated var
+				if (func[i][j] == func[i][k]) {
+					return true;
+				}
+			}
+		}
+	}
 
+	return false;
+}
 
 
 

@@ -1,7 +1,7 @@
 #include "one.h"
 
-Relation::Relation(){
-	j = 0;
+Relation::Relation():j(0) {
+	//j = 0;
 }
 
 void Relation::mpush(int j, int coef, int first, int second){
@@ -55,34 +55,34 @@ int Relation::getj(){
 }
 
 string Unifunction::toString(){
-	if (this->coef == 1){
-		return "x" + to_string(this->x) + " ";		
+	if (coef == 1){
+		return "x" + to_string(x) + " ";		
 	}
 	else{
-		return to_string(this->coef) + "x" + to_string(this->x) + " ";
+		return to_string(coef) + "x" + to_string(x) + " ";
 	}
 }
 
 string Univariate::toString(){
-	if (this->coef == 1){
-		return "y" + to_string(this->j) + " = x" + to_string(this->x);
+	if (coef == 1){
+		return "y" + to_string(j) + " = x" + to_string(x);
 	}
 	else{
-		return "y" + to_string(this->j) + " = " + to_string(this->coef) + "x" + to_string(this->x);
+		return "y" + to_string(j) + " = " + to_string(coef) + "x" + to_string(x);
 	}
 }
 
 string Bilinear::toString(){
-	if (this->second == -1){
-		if (this->coef == 1){
-			return "y" + to_string(this->j) + " = x" + to_string(this->first);
+	if (second == -1){
+		if (coef == 1){
+			return "y" + to_string(j) + " = x" + to_string(first);
 		}
 		else{
-			return "y" + to_string(this->j) + " = " + to_string(this->coef) + "x" + to_string(this->first);
+			return "y" + to_string(j) + " = " + to_string(coef) + "x" + to_string(first);
 		}
 	}
 	else{
-		return "y" + to_string(this->j) + " = y" + to_string(this->first) + "y" + to_string(this->second);
+		return "y" + to_string(j) + " = y" + to_string(first) + "y" + to_string(second);
 	}
 }
 

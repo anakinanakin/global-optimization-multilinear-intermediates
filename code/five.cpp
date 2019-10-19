@@ -3,10 +3,10 @@
 //default constructor
 Graph::Graph() {}
 
-Graph::Graph(Multilinear m) {
+Graph::Graph(Multilinear m):numEdges(0), bi_components_num(0) { 
     //initialize private variables
-    numEdges = 0;
-    bi_components_num = 0;
+    //numEdges = 0;
+    //bi_components_num = 0;
     varnums = m.get_varnums();
     numVertices = varnums.size();
 
@@ -381,44 +381,6 @@ int* Graph::get_csr_edge(){
 
     return arr;
 }
-
-//for parmetis vtxdist
-int* Graph::get_csr_processor(int procnum){
-    int *arr = new int[procnum+1];
-
-    //each processor has one vertex, the extra processors don't have vertices
-    if (procnum >= numVertices){
-        for (int i = 0; i < numVertices; ++i){
-            arr[i] = i;
-        }
-        for (int i = numVertices; i < procnum+1; ++i){
-            arr[i] = numVertices;
-        }
-    }
-    //each processor had equal vertices at first, then give the extra vertices to the front processors one by one
-    else{
-        int q = numVertices / procnum;
-        int r = numVertices % procnum;
-
-        for (int i = 0; i <= r; ++i){
-            arr[i] = (q+1)*i;
-        }
-        for (int i = r+1; i <= procnum; ++i)
-        {
-            arr[i] = (q+1)*r+q*(i-r);
-        }
-    }
-
-    return arr;
-}
-
-//void Graph::set_varnums(std::vector<int> v){
-    //this->varnums = v;
-
-    //for (int i = 0; i < this->varnums.size(); ++i){
-    //    std::cout << this->varnums[i];
-    //}
-//}
  
 Graph::~Graph() {
     for (int i = 0; i < numVertices; ++i){
