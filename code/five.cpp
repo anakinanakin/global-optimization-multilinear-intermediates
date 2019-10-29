@@ -1,12 +1,20 @@
 #include "five.h"
 
 //default constructor
-Graph::Graph() {}
+Graph::Graph() {
+    adjMatrix = new int*[numVertices];
+
+    //initialize the matrix with 0s
+    for (int i = 0; i < numVertices; ++i) {
+        adjMatrix[i] = new int[numVertices];
+        for (int j = 0; j < numVertices; ++j){
+            adjMatrix[i][j] = 0;
+        }
+    }
+}
 
 Graph::Graph(Multilinear m):numEdges(0), bi_components_num(0) { 
     //initialize private variables
-    //numEdges = 0;
-    //bi_components_num = 0;
     varnums = m.get_varnums();
     numVertices = varnums.size();
 
@@ -382,12 +390,13 @@ int* Graph::get_csr_edge(){
     return arr;
 }
  
-Graph::~Graph() {
+//causing error
+/*Graph::~Graph() {
     for (int i = 0; i < numVertices; ++i){
         delete[] adjMatrix[i];
     }
     delete[] adjMatrix;
-};
+}*/
 
 
 

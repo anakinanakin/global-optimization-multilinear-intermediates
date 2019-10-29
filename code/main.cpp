@@ -1,12 +1,11 @@
-//g++ main.cpp one.cpp five.cpp multilinear.cpp -lmetis
+//g++ main.cpp one.cpp five.cpp multilinear.cpp six.cpp -lmetis
+
 #include "multilinear.h"
 #include "one.h"
 #include "five.h"
 #include "six.h"
 
 using namespace std;
-
-int myceil(int numerator, int denominator);
 
 int main(int argc, char *argv[])
 {
@@ -174,7 +173,7 @@ int main(int argc, char *argv[])
 	//cin >> B2;
 	//cout << "input nmax for graph partitioning(nmax >= " << nmin << "): ";
 	//cin >> nmax;
-
+	
 	Partition p(g);
 
 	p.identify_dense();

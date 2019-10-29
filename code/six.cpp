@@ -84,3 +84,16 @@ int Partition::myceil(int numerator, int denominator) {
 		return floor(numerator/denominator)+1;
 	}
 }
+
+Partition::~Partition() {
+	delete[] xadj;
+	delete[] adjncy;
+	delete[] part;
+}
+
+
+
+
+
+
+

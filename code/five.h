@@ -36,7 +36,7 @@ class Graph
 		int* get_csr_vertex();
 		int* get_csr_edge();
 
-		~Graph();
+		//~Graph();
 	
 	private:
 		int** adjMatrix;
