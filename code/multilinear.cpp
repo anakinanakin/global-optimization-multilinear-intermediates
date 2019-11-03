@@ -114,22 +114,60 @@ Multilinear::Multilinear(Multilinear m, vector<struct Edge> v) {
 	}
 }
 
+//for metis partitioning result
+//if a term only consist of vertices in v, then include the term
+//a is only for indicating this constructor
+Multilinear::Multilinear(Multilinear m, vector<int> v, int a) {
+	int discard = 0;
+	//convert v to varnums for m
+	vector<int> varnums_m = m.get_varnums();
+
+	for (int i = 0; i < m.func.size(); ++i) {
+		//func only can use elements from v, so can't be larger than v
+		if ((m.func[i].size()-1) > v.size()) {
+			continue;
+		}
+
+		for (int j = 1; j < m.func[i].size(); ++j) {
+			for (int k = 0; k < v.size(); ++k) {
+				//found element, test next variable
+				if (m.func[i][j] == varnums_m[v[k]]) {
+					discard = 0;
+					break;
+				}
+
+				//not found element, discard term
+				discard = 1;
+			}
+
+			//discard term
+			if (discard == 1) {
+				break;
+			}
+		}
+
+		if (discard == 0) {
+			func.push_back(m.func[i]);
+		}
+	}
+}
+
 //get the number of terms of the function
-int Multilinear::getsize(){
+int Multilinear::getsize() {
 	return func.size();
 }
 
 //get the number of variables in a specific term
-int Multilinear::get_term_size(int term){
+int Multilinear::get_term_size(int term) {
 	return func[term].size();
 }
 
 //get the specific variable
-int Multilinear::getvar(int term, int var){
+int Multilinear::getvar(int term, int var) {
 	return func[term][var];
 }
 
-void Multilinear::toString(){
+void Multilinear::toString() {
 	cout << "\nmultilinear function:";
 
 	for(int i = 0; i < func.size(); ++i){
@@ -161,6 +199,7 @@ vector <int> Multilinear::get_varnums() {
 	}
 
 	sort(varnums.begin(), varnums.end());
+
 	return varnums;
 }
 
@@ -178,6 +217,19 @@ bool Multilinear::repeated_var() {
 
 	return false;
 }
+
+bool Multilinear::isEmpty() {
+	if (func.size() == 0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+
+
+
 
 
 

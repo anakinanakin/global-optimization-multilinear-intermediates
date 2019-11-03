@@ -15,6 +15,7 @@ class Multilinear
 		Multilinear(int a);
 		Multilinear(Multilinear m, vector<int> v);
 		Multilinear(Multilinear m, vector<struct Edge> v);
+		Multilinear(Multilinear m, vector<int> v, int a);
 
 		int getsize();
 		int get_term_size(int term);
@@ -22,6 +23,7 @@ class Multilinear
 		void toString();
 		vector<int> get_varnums();
 		bool repeated_var();
+		bool isEmpty();
 
 	private:
 		vector< vector<int> > func;

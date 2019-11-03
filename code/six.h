@@ -12,15 +12,17 @@ class Partition
 {
 	public:
 		//default arguments should be in the declaration but not in the definition
-		Partition(Graph g, float B1 = 0.1, float B2 = 1.25, int nmin = 4, int nmax = 15);
+		Partition(Graph g);
 
-		vector<Multilinear> identify_dense();
+		vector<Multilinear> identify_dense(Multilinear m, vector<Multilinear> L);
 
 		~Partition();
 
 	private:
-		//gain factor Θ
-		int o;
+		int n;
+		int e;
+		int nmax;
+		int nmin;
 		int pmin;
 		int pmax;
 		int sp;

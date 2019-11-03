@@ -164,6 +164,8 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	cout << "L.size = " << L.size() << endl;
+
 	//algorithm 6
 
 	//input the set of parameters {β1, β2, nmin, nmax}.
@@ -176,7 +178,14 @@ int main(int argc, char *argv[])
 	
 	Partition p(g);
 
-	p.identify_dense();
+	vector<Multilinear> D;
+
+	D = p.identify_dense(m, L);
+
+	//store the set of dense components D for cut generation
+	L.insert(L.end(), D.begin(), D.end());
+
+	cout << "L.size: " << L.size() << endl;
 
 	return 0;
 }
