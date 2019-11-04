@@ -34,7 +34,7 @@ Multilinear::Multilinear(int a){
 }
 
 //construct a multilinear by collecting all terms of multilinear m with each of vertex in arr, used for connected components
-Multilinear::Multilinear(Multilinear m, vector<int> v){
+Multilinear::Multilinear(Multilinear m, const vector<int> &v){
 	//for breaking the loop
 	int a = 0;
 
@@ -61,7 +61,7 @@ Multilinear::Multilinear(Multilinear m, vector<int> v){
 }
 
 //for biconnected components
-Multilinear::Multilinear(Multilinear m, vector<struct Edge> v) {
+Multilinear::Multilinear(Multilinear m, const vector<struct Edge> &v) {
 	int ctr = 0;
 	//for breaking the loop
 	int a = 0;
@@ -117,7 +117,7 @@ Multilinear::Multilinear(Multilinear m, vector<struct Edge> v) {
 //for metis partitioning result
 //if a term only consist of vertices in v, then include the term
 //a is only for indicating this constructor
-Multilinear::Multilinear(Multilinear m, vector<int> v, int a) {
+Multilinear::Multilinear(Multilinear m, const vector<int> &v, int a) {
 	int discard = 0;
 	//convert v to varnums for m
 	vector<int> varnums_m = m.get_varnums();

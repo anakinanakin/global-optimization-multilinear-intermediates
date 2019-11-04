@@ -13,9 +13,9 @@ class Multilinear
 	public:
 		Multilinear();
 		Multilinear(int a);
-		Multilinear(Multilinear m, vector<int> v);
-		Multilinear(Multilinear m, vector<struct Edge> v);
-		Multilinear(Multilinear m, vector<int> v, int a);
+		Multilinear(Multilinear m, const vector<int> &v);
+		Multilinear(Multilinear m, const vector<struct Edge> &v);
+		Multilinear(Multilinear m, const vector<int> &v, int a);
 
 		int getsize();
 		int get_term_size(int term);
