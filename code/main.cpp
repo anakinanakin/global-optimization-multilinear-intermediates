@@ -1,10 +1,11 @@
-//g++ main.cpp one.cpp graph.cpp multilinear.cpp five.cpp six.cpp -lmetis
+//g++ main.cpp one.cpp graph.cpp multilinear.cpp five.cpp six.cpp seven.cpp -lmetis
 
 #include "multilinear.h"
 #include "one.h"
 #include "graph.h"
 #include "five.h"
 #include "six.h"
+#include "seven.h"
 
 using namespace std;
 
@@ -105,7 +106,26 @@ int main(int argc, char *argv[])
 	//store the set of dense components D for cut generation
 	L.insert(L.end(), D.begin(), D.end());
 
-	cout << "L.size: " << L.size() << endl;
+	cout << "L.size: " << L.size();
+
+	for (int i = 0; i < L.size(); ++i) {
+		L[i].toString();
+	}
+
+	//algorithm 7
+
+	Multilinear lrd;
+	//using paper parameters
+	float a = 0.6;
+
+	Reduce re(m, L);
+
+	lrd = re.remove(m, a);
+
+	lrd.toString();
+	cout << endl;
+
+	L.push_back(lrd);
 
 	return 0;
 }

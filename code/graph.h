@@ -1,7 +1,5 @@
 #pragma once
 
-#include <iostream>
-#include <vector>
 #include <list> 
 #include <stack> 
 #include <unordered_set>
@@ -58,10 +56,10 @@ class Graph
 		void removeEdge(int i, int j);
 		int edgeNum(int i, int j);
 
-		void DFS(int i, bool visited[], vector<int> &v);
+		void DFS(int i, bool visited[], vector<int>& v);
 		void BCC(int u, int disc[], int low[], list<struct Edge>* st, int parent[]);
 
-		int countDistinct(const vector<int> &v);
+		int countDistinct(const vector<int>& v);
 }; 
 
 

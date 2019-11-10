@@ -92,7 +92,7 @@ int Graph::edgeNum(int i, int j) {
     return adjMatrix[i][j];
 }
 
-void Graph::DFS(int i, bool visited[], vector<int> &v){
+void Graph::DFS(int i, bool visited[], vector<int>& v){
     // Mark the current node as visited and store it 
     visited[i] = true; 
     v.push_back(i);
@@ -321,7 +321,7 @@ int Graph::get_bicomponent_size(int a) {
 }
 
 //count distinct integers in an array
-int Graph::countDistinct(const vector<int> &v) { 
+int Graph::countDistinct(const vector<int>& v) { 
     // Creates an empty hashset 
     unordered_set<int> s; 
   
