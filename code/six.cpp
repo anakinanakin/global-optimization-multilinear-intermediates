@@ -14,7 +14,7 @@
 
 //g is a weighted biconnected graph
 //use parameters in the paper:nmin(4), nmax(15)
-Partition::Partition(Graph g):nmin(1), nmax(2) {
+Partition::Partition(Graph g):nmin(NMIN), nmax(NMAX) {
 	//Compute ρmin and ρmax. Let ρ = ρmin.
 	n = g.get_vertice_size();
 	e = g.get_edge_size();
@@ -51,10 +51,11 @@ Partition::Partition(Graph g):nmin(1), nmax(2) {
 vector<Multilinear> Partition::identify_dense(Multilinear m, vector<Multilinear> L) {
 	int _metis;
 	int nlp, ne, s;
-	int dsize, lsize;
+	int dsize, lsize, lksize;
 	int terms, term_size;
 	int a;
-	int vsize;
+	int vsize, visize;
+	int varsize;
 	float theta = 0.0, theta_p;
 	float b1 = 0.1, b2 = 1.25;
 	vector<Multilinear> D, D_final;
@@ -109,16 +110,19 @@ vector<Multilinear> Partition::identify_dense(Multilinear m, vector<Multilinear>
 			temp.clear();
 		}
 
+		vsize = v.size();
 		cout << "v: ";
-		for (int i = 0; i < v.size(); ++i) {
-			for (int j = 0; j < v[i].size(); ++j) {
+		for (int i = 0; i < vsize; ++i) {
+			visize = v[i].size();
+
+			for (int j = 0; j < visize; ++j) {
 				cout << v[i][j] << " ";
 			}
 			cout << "/";
 		}
 
 		//construct multilinears according to each categories
-		for (int i = 0; i < v.size(); ++i) {
+		for (int i = 0; i < vsize; ++i) {
 			multi = Multilinear(m, v[i], 1);
 			if (!multi.isEmpty()) {
 				D.push_back(multi);
@@ -156,7 +160,9 @@ vector<Multilinear> Partition::identify_dense(Multilinear m, vector<Multilinear>
 					term_size = D[i].get_term_size(j);
 
 					for (int k = 0; k < lsize; ++k) {
-						for (int x = 0; x < L[k].getsize(); ++x) {
+						lksize = L[k].getsize();
+						
+						for (int x = 0; x < lksize; ++x) {
 							a = 0;
 
 							if (term_size == L[k].get_term_size(x)) {
@@ -195,9 +201,9 @@ vector<Multilinear> Partition::identify_dense(Multilinear m, vector<Multilinear>
 		//compute s(δ):maximum number of variables in the multilinear functions in Dρ
 		for (int i = 0; i < dsize; ++i) {
 			varnums = D[i].get_varnums();
-			vsize = varnums.size();
-			if (vsize > s){
-   	 			s = vsize;
+			varsize = varnums.size();
+			if (varsize > s){
+   	 			s = varsize;
    	 		}
 		}
 		cout << "s: " << s << endl;
@@ -217,15 +223,6 @@ vector<Multilinear> Partition::identify_dense(Multilinear m, vector<Multilinear>
 	cout << "D_final size: " << D_final.size() << endl;
 
 	return D_final;
-}
-
-int Partition::myceil(int numerator, int denominator) {
-	if (numerator == denominator){
-		return floor(numerator/denominator);
-	}
-	else{
-		return floor(numerator/denominator)+1;
-	}
 }
 
 Partition::~Partition() {

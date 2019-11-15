@@ -23,13 +23,15 @@ int main(int argc, char *argv[])
 	//algorithm 1
 
 	Relation r;
+	int msize = m.getsize();
+	int l, term_size, coef, x;
 
 	//multilinear function
-	for (int i = 0; i < m.getsize(); ++i){
-		int l = m.get_term_size(i);//get term size plus 1(coef)
-		int term_size = m.get_term_size(i) - 1;//get term size
-		int coef = m.getvar(i,0); //get term coefficient
-		int x = m.getvar(i,1); //get first x var
+	for (int i = 0; i < msize; ++i){
+		l = m.get_term_size(i);//get term size plus 1(coef)
+		term_size = m.get_term_size(i) - 1;//get term size
+		coef = m.getvar(i, 0); //get term coefficient
+		x = m.getvar(i, 1); //get first x var
 
 		r.addj(1);
 		//the first term has the coefficient coef
@@ -106,9 +108,9 @@ int main(int argc, char *argv[])
 	//store the set of dense components D for cut generation
 	L.insert(L.end(), D.begin(), D.end());
 
-	cout << "L.size: " << L.size();
-
-	for (int i = 0; i < L.size(); ++i) {
+	int lsize = L.size();
+	cout << "L.size: " << lsize;	
+	for (int i = 0; i < lsize; ++i) {
 		L[i].toString();
 	}
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <math.h>
 #include <metis.h>
 
 #include "graph.h"
@@ -36,8 +35,6 @@ class Partition
 		idx_t nparts;
 		idx_t objval;
     	idx_t* part;
-
-		int myceil(int numerator, int denominator);
 };
 
 

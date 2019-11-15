@@ -187,14 +187,17 @@ void Graph::compute_connected_components(){
 } 
 
 void Graph::print_connected_components(){
+    int size = connected_components.size(), csize;
+
     cout << "connected components:";
-    for(int i = 0; i < connected_components.size(); ++i){
+    for(int i = 0; i < size; ++i){
+        csize = connected_components[i].size();
+
         cout << "vertices of component " << i+1 << ": ";
-        for(int j = 0; j < connected_components[i].size(); ++j){
+        for(int j = 0; j < csize; ++j){
             cout << varnums[connected_components[i][j]] << " ";
         }
     }
-    //cout << "\n";
 }
 
 /*//get the first vertex of each component for forming the corresponding multilinear
@@ -324,10 +327,11 @@ int Graph::get_bicomponent_size(int a) {
 int Graph::countDistinct(const vector<int>& v) { 
     // Creates an empty hashset 
     unordered_set<int> s; 
-  
     // Traverse the input array 
     int res = 0; 
-    for (int i = 0; i < v.size(); i++) { 
+    int vsize = v.size();
+
+    for (int i = 0; i < vsize; i++) { 
         // If not present, then put it in 
         // hashtable and increment result 
         if (s.find(v[i]) == s.end()) { 

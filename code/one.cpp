@@ -20,17 +20,23 @@ void Relation::fpush(int coef, int x){
 }
 
 void Relation::mprint(){
-	for(int i = 0; i < m.size(); ++i)
+	int size = m.size();
+
+	for(int i = 0; i < size; ++i)
   		cout << m[i].toString();
 }
 
 void Relation::yprint(){
-	for(int i = 0; i < y.size(); ++i)
+	int size = y.size();
+
+	for(int i = 0; i < size; ++i)
   		cout << y[i].toString();
 }
 
 void Relation::fprint(){
-	for(int i = 0; i < f.size(); ++i)
+	int size = f.size();
+
+	for(int i = 0; i < size; ++i)
   		cout << f[i].toString();
 }
 

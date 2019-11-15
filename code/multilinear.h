@@ -3,10 +3,17 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <math.h>
 
 #include "edge.h"
 
+#define NMAX 2
+#define NMIN 1
+
 using namespace std;
+
+int myceil(int numerator, int denominator);
+int min(int a, int b);
 
 class Multilinear
 {
@@ -30,4 +37,12 @@ class Multilinear
 		vector< vector<int> > func;
 		//distinct variable nums
     	vector<int> varnums;
+
+    	//void reduce_dimension(int term, int nk, int nmax);
 };
+
+
+
+
+
+

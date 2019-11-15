@@ -1,17 +1,20 @@
 #include "seven.h"
 
 Reduce::Reduce(Multilinear m, vector<Multilinear>& L): ncv(0) {
-	int lsize = L.size();
-	int term_size;
+	int size = m.getsize(), lsize = L.size(), term_size, lksize;
 	int a;
 
 	if (lsize > 0) {
 		//compute u, ncv
-		for (int i = 0; i < m.getsize(); ++i) {
+		for (int i = 0; i < size; ++i) {
 			u.push_back(0);
+
 			term_size = m.get_term_size(i);
+
 			for (int k = 0; k < lsize; ++k) {
-				for (int x = 0; x < L[k].getsize(); ++x) {
+				lksize = L[k].getsize();
+
+				for (int x = 0; x < lksize; ++x) {
 					a = 0;
 
 					if (term_size == L[k].get_term_size(x)) {
@@ -42,22 +45,27 @@ Reduce::Reduce(Multilinear m, vector<Multilinear>& L): ncv(0) {
 		}
 	}
 
+	int usize = u.size();
+
 	cout << "\nu:";
-	for (int i = 0; i < u.size(); ++i) {
+	for (int i = 0; i < usize; ++i) {
 		cout << " " << u[i];
 	}
 	cout << " ncv: " << ncv << endl;
 
 	int var;
+	int cover_size;
 
 	if (ncv > 0) {
 		//compute covered variables
 		covered_var = candi_covered_var(m);
 
 		//if in u=0 terms exist a variable, exclude it
-		for (int i = 0; i < u.size(); ++i) {
+		for (int i = 0; i < usize; ++i) {
+			term_size = m.get_term_size(i);
+
 			if (u[i] == 0) {
-				for (int j = 1; j < m.get_term_size(i); ++j) {
+				for (int j = 1; j < term_size; ++j) {
 					var = m.getvar(i, j);
 					//if covered_var contains var
 					if (find(covered_var.begin(), covered_var.end(), var) != covered_var.end()) {
@@ -67,8 +75,9 @@ Reduce::Reduce(Multilinear m, vector<Multilinear>& L): ncv(0) {
 			}
 		}
 
+		cover_size = covered_var.size();
 		cout << "covered_var:";
-		for (int i = 0; i < covered_var.size(); ++i) {
+		for (int i = 0; i < cover_size; ++i) {
 			cout << " " << covered_var[i];
 		}
 	}
@@ -76,18 +85,23 @@ Reduce::Reduce(Multilinear m, vector<Multilinear>& L): ncv(0) {
 
 //removing all terms of L(x) in which at least one covered variable appears
 Multilinear Reduce::remove(Multilinear m, float a) {
-	int x;
+	int x, term_size, cover_size = covered_var.size();
 
+	//m changes during for loop, can't replace m.getsize()
 	for (int i = 0; i < m.getsize(); ++i) {
 		x = 0;
+		term_size = m.get_term_size(i);
 
-		for (int j = 1; j < m.get_term_size(i); ++j) {
-			for (int k = 0; k < covered_var.size(); ++k) {
+		for (int j = 1; j < term_size; ++j) {
+			for (int k = 0; k < cover_size; ++k) {
 				if (m.getvar(i, j) == covered_var[k]) {
 					x = 1;
 
 					m.remove_term(i);
 					u.erase(u.begin() + i);
+
+					//to examine the correct term
+					--i;
 
 					break;
 				}
@@ -123,10 +137,13 @@ Multilinear Reduce::remove(Multilinear m, float a) {
 vector<int> Reduce::candi_covered_var(Multilinear m) {
 	vector<int> v;
 	int var;
+	int usize = u.size(), term_size;
 
-	for (int i = 0; i < u.size(); ++i) {
+	for (int i = 0; i < usize; ++i) {
+		term_size = m.get_term_size(i);
+
 		if (u[i] > 0) {
-			for (int j = 1; j < m.get_term_size(i); ++j) {
+			for (int j = 1; j < term_size; ++j) {
 				var = m.getvar(i, j);
 				//if v doesn't contain var
 				if (find(v.begin(), v.end(), var) == v.end()) {
@@ -138,8 +155,9 @@ vector<int> Reduce::candi_covered_var(Multilinear m) {
 
 	sort(v.begin(), v.end());
 
+	int vsize = v.size();
 	cout << "candi:";
-	for (int i = 0; i < v.size(); ++i) {
+	for (int i = 0; i < vsize; ++i) {
 		cout << " " << v[i];
 	}
 	cout << endl;

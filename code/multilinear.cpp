@@ -31,17 +31,38 @@ Multilinear::Multilinear(int a){
 		func.push_back(v);
 		v.clear();
 	}
+
+	/*int nk, nmax = NMAX;
+	int size = func.size();
+
+	//dimension not reduced, causing infinite loop
+	//replace each term tk with nk > nmax by dk multilinear terms
+	for (int i = 0; i < size; ++i) {
+		cout << "d3";
+		//number of variables in term i
+		nk = func[i].size() - 1;
+		cout << "nk: " << nk;
+		cout << "nmax: " << nmax;
+		if (nk > nmax) {
+			reduce_dimension(i, nk, nmax);
+
+			//to examine the correct term
+			--i;
+		}
+	}*/
 }
 
 //construct a multilinear by collecting all terms of multilinear m with each of vertex in arr, used for connected components
 Multilinear::Multilinear(Multilinear m, const vector<int>& v){
 	//for breaking the loop
-	int a = 0;
+	int a = 0, msize = m.func.size(), mfuncsize, vsize = v.size();
 
-	for (int i = 0; i < m.func.size(); ++i) {
+	for (int i = 0; i < msize; ++i) {
+		mfuncsize = m.func[i].size();
+
 		//ignore coef
-		for (int j = 1; j < m.func[i].size(); ++j) {
-			for (int k = 0; k < v.size(); ++k) {
+		for (int j = 1; j < mfuncsize; ++j) {
+			for (int k = 0; k < vsize; ++k) {
 				//if found same vertex, push it to the new multilinear
 				if (m.func[i][j] == v[k]){
 					func.push_back(m.func[i]);
@@ -68,14 +89,16 @@ Multilinear::Multilinear(Multilinear m, const vector<struct Edge>& v) {
 	//for continue to next iteration
 	//int b = 0;
 	//vector<int> same_num;
+	int msize = m.func.size(), mfuncsize, vsize = v.size();
 
-	for (int i = 0; i < m.func.size(); ++i) {
+	for (int i = 0; i < msize; ++i) {
 		//same_num.clear();
+		mfuncsize = m.func[i].size();
 
-		for (int k = 0; k < v.size(); ++k) {
+		for (int k = 0; k < vsize; ++k) {
 			ctr = 0;
 			//ignore coef
-			for (int j = 1; j < m.func[i].size(); ++j) {
+			for (int j = 1; j < mfuncsize; ++j) {
 				//if same variable is found, continue to next iteration
 				/*for (int l = 0; l < same_num.size(); ++l) {
 					if (same_num[l] == m.func[i][j]) {
@@ -119,17 +142,20 @@ Multilinear::Multilinear(Multilinear m, const vector<struct Edge>& v) {
 //a is only for indicating this constructor
 Multilinear::Multilinear(Multilinear m, const vector<int>& v, int a) {
 	int discard = 0;
+	int msize = m.func.size(), mfuncsize, vsize = v.size();
 	//convert v to varnums for m
 	vector<int> varnums_m = m.get_varnums();
 
-	for (int i = 0; i < m.func.size(); ++i) {
+	for (int i = 0; i < msize; ++i) {
+		mfuncsize = m.func[i].size();
+
 		//func only can use elements from v, so can't be larger than v
 		if ((m.func[i].size()-1) > v.size()) {
 			continue;
 		}
 
-		for (int j = 1; j < m.func[i].size(); ++j) {
-			for (int k = 0; k < v.size(); ++k) {
+		for (int j = 1; j < mfuncsize; ++j) {
+			for (int k = 0; k < vsize; ++k) {
 				//found element, test next variable
 				if (m.func[i][j] == varnums_m[v[k]]) {
 					discard = 0;
@@ -173,10 +199,13 @@ void Multilinear::remove_term(int term) {
 }
 
 void Multilinear::toString() {
+	int size = func.size(), funcsize;
 	cout << "\nmultilinear function:";
 
-	for(int i = 0; i < func.size(); ++i){
-		for(int j = 0; j < func[i].size(); ++j){
+	for(int i = 0; i < size; ++i){
+		funcsize = func[i].size();
+
+		for(int j = 0; j < funcsize; ++j){
 			//don't print coef 1
 			if (j != 0 || func[i][j] != 1){
 				cout << func[i][j];
@@ -195,8 +224,12 @@ void Multilinear::toString() {
 
 //return the distinct variables used, in increasing order
 vector <int> Multilinear::get_varnums() {
-	for(int i = 0; i < func.size(); ++i) {
-		for(int j = 1; j < func[i].size(); ++j) {
+	int size = func.size(), funcsize;
+
+	for(int i = 0; i < size; ++i) {
+		funcsize = func[i].size();
+
+		for(int j = 1; j < funcsize; ++j) {
 			if (find(varnums.begin(), varnums.end(), func[i][j]) == varnums.end()){
 				varnums.push_back(func[i][j]);
 			}
@@ -209,9 +242,13 @@ vector <int> Multilinear::get_varnums() {
 }
 
 bool Multilinear::repeated_var() {
-	for(int i = 0; i < func.size(); ++i) {
-		for(int j = 1; j < func[i].size(); ++j) {
-			for(int k = j+1; k < func[i].size(); ++k) {
+	int size = func.size(), funcsize;
+
+	for(int i = 0; i < size; ++i) {
+		funcsize = func[i].size();
+		
+		for(int j = 1; j < funcsize; ++j) {
+			for(int k = j+1; k < funcsize; ++k) {
 				//found repeated var
 				if (func[i][j] == func[i][k]) {
 					return true;
@@ -231,6 +268,76 @@ bool Multilinear::isEmpty() {
 		return false;
 	}
 }
+
+//todo: implement term tk
+//replace each term tk with nk > nmax by dk multilinear terms
+/*void  Multilinear::reduce_dimension(int term, int nk, int nmax) {
+	int dk = 1 + myceil(nk - nmax, nmax - 1);
+	vector<int> v;
+	int ls, us;
+
+	//t1
+	for (int i = 0; i <= nmax; ++i) {
+		v.push_back(func[term][i]);
+		cout << "d1";
+	}
+	func.push_back(v);
+
+	//t(s+1)
+	for (int s = 1; s < dk; ++s) {
+		ls = s * (nmax - 1) + 2;
+		us = min(s * (nmax - 1) + nmax, nk);
+		cout << "ls: " << ls; 
+		cout << "us: " << us; 
+
+		for (int i = ls; i <= us; ++i) {
+		 	v.push_back(func[term][i]);
+			cout << i;
+		}
+
+		func.push_back(v);
+		cout << "d2";
+	}
+
+	func.erase(func.begin() + term);
+}*/
+
+int myceil(int numerator, int denominator) {
+	if (numerator == denominator){
+		return floor(numerator/denominator);
+	}
+	else{
+		return floor(numerator/denominator)+1;
+	}
+}
+
+int min(int a, int b) {
+	if (a > b) {
+		return b;
+	}
+	else {
+		return a;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

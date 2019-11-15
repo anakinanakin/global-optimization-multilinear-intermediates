@@ -3,7 +3,7 @@
 //if the number of variables in L(x) does not exceed nmin, 
 //we do not attempt to break it down to smaller multilinears but store it for cut generation.
 //use nmin in paper
-Decompose::Decompose(Graph a, Multilinear b): nmin(4), g(a), m(b) {
+Decompose::Decompose(Graph a, Multilinear b): nmin(NMIN), g(a), m(b) {
 	g.compute_connected_components();
 	g.print_connected_components();
 
@@ -13,6 +13,7 @@ Decompose::Decompose(Graph a, Multilinear b): nmin(4), g(a), m(b) {
 void Decompose::connected(vector<Multilinear>& L, vector<Multilinear>& ccomponents) {
 	vector<int> v;
 	Multilinear lt;
+	int vsize;
 
 	for (int i = 0; i < csize; ++i){ 
 		v = g.get_connected_components_vertices(i);
@@ -24,8 +25,9 @@ void Decompose::connected(vector<Multilinear>& L, vector<Multilinear>& ccomponen
 		//if nt=3 && gt has 3 edges
 		if (g.get_component_size(i) == 3 && g.three_edge_component(i)){
 
+			vsize = v.size();
 			cout << "v: ";
-			for (int j = 0; j < v.size(); ++j){
+			for (int j = 0; j < vsize; ++j){
 				cout << v[j] << " ";
 			}
 			
@@ -34,9 +36,11 @@ void Decompose::connected(vector<Multilinear>& L, vector<Multilinear>& ccomponen
 		}
 	}
 
-	cout << "L.size = " << L.size() << endl;
+	int lsize = L.size();
+
+	cout << "L.size = " << lsize << endl;
 	cout << "L:";
-	for (int i = 0; i < L.size(); ++i){
+	for (int i = 0; i < lsize; ++i){
 		L[i].toString();
 		cout << endl;
 	}
