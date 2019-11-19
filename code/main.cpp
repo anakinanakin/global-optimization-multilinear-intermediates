@@ -1,4 +1,4 @@
-//g++ main.cpp one.cpp graph.cpp multilinear.cpp five.cpp six.cpp seven.cpp -lmetis
+//g++ main.cpp one.cpp graph.cpp multilinear.cpp five.cpp six.cpp seven.cpp eight.cpp -lmetis
 
 #include "multilinear.h"
 #include "one.h"
@@ -6,6 +6,7 @@
 #include "five.h"
 #include "six.h"
 #include "seven.h"
+#include "eight.h"
 
 using namespace std;
 
@@ -77,17 +78,17 @@ int main(int argc, char *argv[])
 
 	Decompose d(g, m);
 
-	//L for cut generation
-	vector<Multilinear> L;
+	vector<Multilinear> L;//L for cut generation
 	vector<Multilinear> ccomponents;
-	//uncovered multilinears U for further decomposition
-	vector<Multilinear> U;
+	vector<Multilinear> U;//uncovered multilinears U for further decomposition
 
 	d.connected(L, ccomponents);
 
 	d.biconnected(L, U, ccomponents);
 
 	cout << "\nL.size: " << L.size() << endl;
+	cout << "\nU.size: " << U.size() << endl;
+
 
 	//algorithm 6
 
@@ -128,6 +129,21 @@ int main(int argc, char *argv[])
 	cout << endl;
 
 	L.push_back(lrd);
+
+	//algorithm 8
+
+	vector<Multilinear> UU;
+
+	Integrate in(m);
+
+	UU = in.construct(m);
+
+	int uusize = UU.size();
+	cout << "UU.size: " << uusize;
+	for (int i = 0; i < uusize; ++i) {
+		UU[i].toString();
+	}
+	cout << endl;
 
 	return 0;
 }

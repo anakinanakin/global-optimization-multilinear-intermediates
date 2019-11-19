@@ -7,8 +7,8 @@
 
 #include "edge.h"
 
-#define NMAX 2
-#define NMIN 1
+#define NMAX 10
+#define NMIN 3
 
 using namespace std;
 
@@ -35,8 +35,7 @@ class Multilinear
 
 	private:
 		vector< vector<int> > func;
-		//distinct variable nums
-    	vector<int> varnums;
+    	vector<int> varnums;//distinct variable nums
 
     	//void reduce_dimension(int term, int nk, int nmax);
 };

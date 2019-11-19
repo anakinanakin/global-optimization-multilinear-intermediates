@@ -1,52 +1,9 @@
 #include "seven.h"
 
-Reduce::Reduce(Multilinear m, vector<Multilinear>& L): ncv(0) {
-	int size = m.getsize(), lsize = L.size(), term_size, lksize;
-	int a;
-
-	if (lsize > 0) {
-		//compute u, ncv
-		for (int i = 0; i < size; ++i) {
-			u.push_back(0);
-
-			term_size = m.get_term_size(i);
-
-			for (int k = 0; k < lsize; ++k) {
-				lksize = L[k].getsize();
-
-				for (int x = 0; x < lksize; ++x) {
-					a = 0;
-
-					if (term_size == L[k].get_term_size(x)) {
-						for (int j = 0; j < term_size; ++j) {
-							//not the same term
-							if (m.getvar(i, j) != L[k].getvar(x, j)) {
-								a = 1;
-								break;
-							}
-						}
-					}
-					//not the same term
-					else {
-						a = 1;
-					}
-
-					//same term
-					if (a == 0) {
-						u[i]++;
-						break;
-					}
-				}
-			}
-
-			if (u[i] > 0) {
-				ncv++;
-			}	
-		}
-	}
+Reduce::Reduce(Multilinear m, vector<Multilinear>& L) {
+	ncv = compute_covered(m, L, u);
 
 	int usize = u.size();
-
 	cout << "\nu:";
 	for (int i = 0; i < usize; ++i) {
 		cout << " " << u[i];
@@ -54,7 +11,7 @@ Reduce::Reduce(Multilinear m, vector<Multilinear>& L): ncv(0) {
 	cout << " ncv: " << ncv << endl;
 
 	int var;
-	int cover_size;
+	int term_size, cover_size;
 
 	if (ncv > 0) {
 		//compute covered variables
@@ -163,6 +120,55 @@ vector<int> Reduce::candi_covered_var(Multilinear m) {
 	cout << endl;
 
 	return v;
+}
+
+//compute u, ncv
+int compute_covered(Multilinear m, vector<Multilinear>& v, vector<int>& u) {
+	int size = m.getsize(), vsize = v.size(), term_size, lksize;
+	int ncv = 0, a;
+
+	if (vsize > 0) {
+		//compute u, ncv
+		for (int i = 0; i < size; ++i) {
+			u.push_back(0);
+
+			term_size = m.get_term_size(i);
+
+			for (int k = 0; k < vsize; ++k) {
+				lksize = v[k].getsize();
+
+				for (int x = 0; x < lksize; ++x) {
+					a = 0;
+
+					if (term_size == v[k].get_term_size(x)) {
+						for (int j = 0; j < term_size; ++j) {
+							//not the same term
+							if (m.getvar(i, j) != v[k].getvar(x, j)) {
+								a = 1;
+								break;
+							}
+						}
+					}
+					//not the same term
+					else {
+						a = 1;
+					}
+
+					//same term
+					if (a == 0) {
+						u[i]++;
+						break;
+					}
+				}
+			}
+
+			if (u[i] > 0) {
+				ncv++;
+			}	
+		}
+	}
+
+	return ncv;
 }
 
 

@@ -269,8 +269,8 @@ bool Multilinear::isEmpty() {
 	}
 }
 
-//todo: implement term tk
-//replace each term tk with nk > nmax by dk multilinear terms
+//todo: implement term t1,....,ts+1
+//replace each term with nk > nmax by dk multilinear terms
 /*void  Multilinear::reduce_dimension(int term, int nk, int nmax) {
 	int dk = 1 + myceil(nk - nmax, nmax - 1);
 	vector<int> v;

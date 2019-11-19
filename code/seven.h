@@ -4,6 +4,8 @@
 
 using namespace std;
 
+int compute_covered(Multilinear m, vector<Multilinear>& v, vector<int>& u);
+
 class Reduce
 {
 	public:
@@ -12,10 +14,8 @@ class Reduce
 		Multilinear remove(Multilinear m, float a);
 		
 	private:
-		//μk denote the number of multilinears in L in which term k appears
-		vector<int> u;
-		//number of covered terms(none 0 elements in u)
-		int ncv;
+		vector<int> u;//μk denote the number of multilinears in L in which term k appears
+		int ncv;//number of covered terms(none 0 elements in u)
 		vector<int> covered_var;
 
 		vector<int> candi_covered_var(Multilinear m);
