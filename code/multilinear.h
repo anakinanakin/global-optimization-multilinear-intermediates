@@ -5,10 +5,13 @@
 #include <algorithm>
 #include <math.h>
 
-#include "edge.h"
-
-#define NMAX 10
-#define NMIN 3
+//default settings in the paper
+#define NMIN 4
+#define NMAX 15
+#define B1 0.1
+#define B2 1.25
+#define A 0.6
+#define RC 0.85
 
 using namespace std;
 
@@ -38,6 +41,17 @@ class Multilinear
     	vector<int> varnums;//distinct variable nums
 
     	//void reduce_dimension(int term, int nk, int nmax);
+};
+
+//edge for representing biconnected components
+struct Edge 
+{  
+    int v; 
+    int i; 
+    Edge(int a, int b){
+    	v = a;
+    	i = b;
+    }
 };
 
 

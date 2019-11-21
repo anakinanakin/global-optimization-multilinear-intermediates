@@ -302,6 +302,7 @@ bool Multilinear::isEmpty() {
 	func.erase(func.begin() + term);
 }*/
 
+//math.ceil() has problem with fraction, build myceil()
 int myceil(int numerator, int denominator) {
 	if (numerator == denominator){
 		return floor(numerator/denominator);

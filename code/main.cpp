@@ -1,8 +1,8 @@
-//g++ main.cpp one.cpp graph.cpp multilinear.cpp five.cpp six.cpp seven.cpp eight.cpp -lmetis
+//g++ main.cpp multilinear.cpp graph.cpp one.cpp five.cpp six.cpp seven.cpp eight.cpp -lmetis
 
 #include "multilinear.h"
-#include "one.h"
 #include "graph.h"
+#include "one.h"
 #include "five.h"
 #include "six.h"
 #include "seven.h"
@@ -22,6 +22,8 @@ int main(int argc, char *argv[])
 	}
 
 	//algorithm 1
+
+	cout << "\n----------------start algorithm 1---------------------\n";
 
 	Relation r;
 	int msize = m.getsize();
@@ -63,15 +65,16 @@ int main(int argc, char *argv[])
 		r.mpush(r.getj(), r.fgetcoef(i), r.fgetval(i), -1);
 	}
 
-	cout << "m:";
+	cout << "\nm:";
 	r.mprint();
-	cout << "y:";
+	cout << "\ny:";
 	r.yprint();
-	cout << "f:";
+	cout << "\nf:";
 	r.fprint();
-	cout << "";
 
 	//algorithm 5 
+
+	cout << "\n----------------start algorithm 5---------------------\n";
 
 	Graph g(m);
 	g.toString();
@@ -92,13 +95,7 @@ int main(int argc, char *argv[])
 
 	//algorithm 6
 
-	//input the set of parameters {β1, β2, nmin, nmax}.
-	//cout << "input B1 for graph partitioning(0 < B1 ≤ 1): ";
-	//cin >> B1;
-	//cout << "input B2 for graph partitioning(1 ≤ B2): ";
-	//cin >> B2;
-	//cout << "input nmax for graph partitioning(nmax >= " << nmin << "): ";
-	//cin >> nmax;
+	cout << "\n----------------start algorithm 6---------------------\n";
 	
 	Partition p(g);
 
@@ -117,9 +114,10 @@ int main(int argc, char *argv[])
 
 	//algorithm 7
 
-	Multilinear lrd;
-	//using paper parameters
-	float a = 0.6;
+	cout << "\n----------------start algorithm 7---------------------\n";
+
+	Multilinear lrd;	
+	float a = A;
 
 	Reduce re(m, L);
 
@@ -131,6 +129,8 @@ int main(int argc, char *argv[])
 	L.push_back(lrd);
 
 	//algorithm 8
+
+	cout << "\n----------------start algorithm 8---------------------\n";
 
 	vector<Multilinear> UU;
 

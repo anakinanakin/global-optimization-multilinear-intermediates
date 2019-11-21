@@ -23,7 +23,6 @@ Partition::Partition(Graph g):nmin(NMIN), nmax(NMAX) {
 	cout << " nmax: " << nmax;
 	cout << " nmin: " << nmin;
 
-	//math.ceil() has problem with fraction, build myceil()
 	pmin = myceil(n, nmax);
 	pmax = floor(n/nmin);
 
@@ -57,7 +56,7 @@ vector<Multilinear> Partition::identify_dense(Multilinear m, vector<Multilinear>
 	int vsize, visize;
 	int varsize;
 	float theta = 0.0, theta_p;
-	float b1 = 0.1, b2 = 1.25;
+	float b1 = B1, b2 = B2;
 	vector<Multilinear> D, D_final;
 	vector< vector<int> > v;
 	vector<int> temp;

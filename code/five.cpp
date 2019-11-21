@@ -2,7 +2,6 @@
 
 //if the number of variables in L(x) does not exceed nmin, 
 //we do not attempt to break it down to smaller multilinears but store it for cut generation.
-//use nmin in paper
 Decompose::Decompose(Graph a, Multilinear b): nmin(NMIN), g(a), m(b) {
 	g.compute_connected_components();
 	g.print_connected_components();

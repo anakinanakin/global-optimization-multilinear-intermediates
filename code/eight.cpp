@@ -1,6 +1,6 @@
 #include "eight.h"
 
-Integrate::Integrate(Multilinear m): rc(0.85) {
+Integrate::Integrate(Multilinear m): rc(RC) {
 	//using algorithm 5, update nc and U
 
 	cout << "\n--------------START 5---------------------" << endl;
@@ -48,7 +48,6 @@ vector<Multilinear> Integrate::construct(Multilinear m) {
 		vector<int> v;
 
 		while ( (nc >= rc*msize) && (usize > 0) ) {
-		//while (nc >= msize) {
 			//select the first multilinear
 			Li = U[0];
 

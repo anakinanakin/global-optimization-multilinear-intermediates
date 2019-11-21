@@ -1,7 +1,6 @@
 #include "one.h"
 
 Relation::Relation():j(0) {
-	//j = 0;
 }
 
 void Relation::mpush(int j, int coef, int first, int second){
